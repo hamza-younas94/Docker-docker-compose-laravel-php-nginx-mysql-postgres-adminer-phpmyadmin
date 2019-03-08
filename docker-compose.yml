@@ -1,0 +1,88 @@
+version: "3.5"
+services:
+  project_webserver:
+    image: nginx
+    container_name: project_webserver
+    restart: always
+    volumes:
+      - ./laravel-app:/var/www
+      - ./configuration/nginx/conf.d/:/etc/nginx/conf.d/
+    # volumes_from:
+    #   - project_laravel
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - project-network
+    links:
+      - project_laravel  
+  project_laravel:
+    build:
+      context: ./laravel-app
+      dockerfile: Dockerfile     
+    container_name: project_laravel
+    # image: digitalocean.com/php
+    volumes:
+      - ./laravel-app:/var/www
+      - ./configuration/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+    links:
+      - project_postgres
+    networks:
+      - project-network
+  project_phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: project_phpmyadmin
+    ports:
+      - 8182:80
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=project_mysql
+    restart: always
+    depends_on:
+      - project_mysql
+    networks:
+      - project-network  
+  project_mysql:
+    image: mysql:5.7.22
+    container_name: project_mysql        
+    restart: always
+    # expose:
+    #   - 3306
+    environment:
+      - MYSQL_DATABASE=root
+      - MYSQL_ROOT_PASSWORD=Pro@123
+      - MYSQL_USER=demo
+      - MYSQL_PASSWORD=demo
+    ports:
+      - 3306:3306
+    volumes:
+      - ./dbdata/mysql:/var/lib/mysql
+    networks:
+      - project-network      
+  project_postgres:
+    image: postgres
+    container_name: project_postgres  
+    restart: always
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=Pro@123
+    volumes:
+      - ./dbdata/postgres:/var/lib/postgresql/data
+    networks:
+      - project-network
+  project_adminer:
+    image: adminer
+    container_name: project_adminer  
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - project-network
+networks:
+  project-network:
+    driver: bridge
+# #Volumes
+#   volumes:
+#     dbdata:
+#       driver: local    

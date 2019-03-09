@@ -3,6 +3,7 @@ FROM php:7.2-fpm
 # Copy composer.lock and composer.json
 COPY ./laravel-app/composer.lock ./laravel-app/composer.json /var/www/
 COPY docker-entry.sh /
+RUN chmod +x /docker-entry.sh
 
 # Set working directory
 WORKDIR /var/www
@@ -56,8 +57,6 @@ RUN cat /usr/local/etc/php/conf.d/local.ini
 
 # Change current user to www
 USER www
-
-RUN chmod +x /docker-entry.sh
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000

@@ -55,9 +55,7 @@ COPY ./configuration/php/local.ini /usr/local/etc/php/conf.d/local.ini
 RUN ls /usr/local/etc/php/conf.d
 RUN cat /usr/local/etc/php/conf.d/local.ini
 
-# Change current user to www
-USER www
 
-# Expose port 9000 and start php-fpm server
-EXPOSE 9000
+# Expose port 80 and start php-fpm server
+EXPOSE 80
 CMD ["/docker-entry.sh"]

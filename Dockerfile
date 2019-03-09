@@ -41,11 +41,8 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN groupadd -g 1000 www
 RUN useradd -u 1000 -ms /bin/bash -g www www
 
-# Copy existing application directory contents
-# COPY ./laravel-app /var/www/
-
-# Copy existing application directory permissions
-COPY --chown=www:www ./laravel-app /var/www/
+# Copy existing application directory
+COPY ./laravel-app /var/www/
 RUN ls /var/www
 
 COPY ./configuration/nginx/conf.d/ /etc/nginx/conf.d/
@@ -58,7 +55,7 @@ RUN cat /usr/local/etc/php/conf.d/local.ini
 RUN rm -rf /etc/nginx/sites-enabled
 RUN mkdir -p /etc/nginx/sites-enabled
 
-RUN chmod -R 775 /var/www/storage
+RUN chmod -R 777 /var/www/storage
 
 # Expose port 80 and start php-fpm server
 EXPOSE 80

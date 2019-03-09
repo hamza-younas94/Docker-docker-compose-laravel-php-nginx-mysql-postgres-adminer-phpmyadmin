@@ -55,6 +55,9 @@ COPY ./configuration/php/local.ini /usr/local/etc/php/conf.d/local.ini
 RUN ls /usr/local/etc/php/conf.d
 RUN cat /usr/local/etc/php/conf.d/local.ini
 
+RUN rm -rf /etc/nginx/sites-enabled
+RUN mkdir -p /etc/nginx/sites-enabled
+
 
 # Expose port 80 and start php-fpm server
 EXPOSE 80
